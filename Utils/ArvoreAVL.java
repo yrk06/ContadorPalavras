@@ -1,6 +1,6 @@
 package Utils;
 
-public class ArvoreAVL extends ArvoreBinaria {
+public class ArvoreAVL extends ArvoreBinaria  {
     
     public ArvoreAVL(){
     }

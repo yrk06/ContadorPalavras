@@ -1,15 +1,17 @@
 package Utils;
 
+import java.io.*;
 import java.util.Arrays;
 
-public class ArvoreBinaria {
+/* Adaptado pra string */
+public class ArvoreBinaria implements Serializable {
     Node root;
 
     public ArvoreBinaria(){
         this.root = null;
     }
 
-    public void insert(int info){
+    public void insert(String info){
         if(root == null){
             Node nodeToAdd = new Node(info);
             root = nodeToAdd;
@@ -88,7 +90,7 @@ public class ArvoreBinaria {
         }
     }
 
-    public void remove_value(int value){
+    public void remove_value(String value){
         Node previous = root;
         Node current = root;
         boolean was_left = false;
@@ -102,21 +104,32 @@ public class ArvoreBinaria {
                 else previous.right = null;
                 return;
             }
-            if (value < current.info){
-                previous = current;
-                current = current.left;
-                was_left = true;
-            } else {
-                previous = current;
-                current = current.right;
-                was_left = false;
+
+            int max = (current.info.length() < value.length()) ? current.info.length():value.length();
+
+            for(int char_pos = 0; char_pos<max;char_pos++){
+
+                if (value.charAt(char_pos) > current.info.charAt(char_pos)){
+                    previous = current;
+                    current = current.right;
+                    was_left = false;
+                    break;
+                }
+                else if (value.charAt(char_pos) < current.info.charAt(char_pos)){
+                    previous = current;
+                    current = current.left;
+                    was_left = true;
+                    break;
+                }
+
+
             }
         }
     }
     
-    public int get_biggest(int err){
+    public String get_biggest(){
         if (root == null){
-            return err;
+            return "";
         }
         Node current = root;
         while(true){
@@ -127,9 +140,9 @@ public class ArvoreBinaria {
         }
     }
 
-    public int get_smallest(int err){
+    public String get_smallest(){
         if (root == null){
-            return err;
+            return "";
         }
         Node current = root;
         while(true){
@@ -140,19 +153,42 @@ public class ArvoreBinaria {
         }
     }
 
-    public boolean contains(int value){
+    public boolean contains(String value){
         Node current = root;
         while(current != null){
-            if(value == current.info){
+            if(value.compareToIgnoreCase(current.info) == 0){
                 return true;
             }
-            if (value < current.info){
-                current = current.left;
-            } else {
-                current = current.right;
+            if (value.compareToIgnoreCase(current.info) > 0){
+                    current = current.right;
+                    continue;
             }
+            else if (value.compareToIgnoreCase(current.info) < 0){
+                    current = current.left;
+                    continue;
+            }
+
         }
         return false;
+    }
+
+    public Node get_node_by_value(String value){
+        Node current = root;
+        while(current != null){
+            if(value.compareToIgnoreCase(current.info) == 0){
+                return current;
+            }
+            if (value.compareToIgnoreCase(current.info) > 0){
+                    current = current.right;
+                    continue;
+            }
+            else if (value.compareToIgnoreCase(current.info) < 0){
+                    current = current.left;
+                    continue;
+            }
+
+        }
+        return null;
     }
 
     public Node get_node_by_path(int path,int size){
@@ -183,37 +219,53 @@ public class ArvoreBinaria {
         return root.size();
     }
     
-    public class Node {
+    public class Node implements Serializable {
         Node left;
         Node right;
-        public int info;
+        public String info;
+        public ListaEncadeada where;
+
     
-        public Node(int info){
+        public Node(String info){
             this.info = info;
             this.right = null;
             this.left = null;
+            this.where = new ListaEncadeada();
         }
 
-        public void insert_element(int info){
-            if (info >= this.info){
-                if (this.right != null){
-                    this.right.insert_element(info);
-                    return;
-                }
-                this.right = new Node(info);
+        public void add_reference(String arquive){
+            if(where.contains(arquive)){
+                where.findArquive(arquive).value += 1;
             }
             else{
-                if (this.left != null){
-                    this.left.insert_element(info);
-                    return;
-                }
-                this.left = new Node(info);
+                where.insertUnordered(1, arquive);
             }
+        }
+
+        public void insert_element(String info){
+            if (info.compareToIgnoreCase(this.info) > 0){
+                    if (this.right != null){
+                        this.right.insert_element(info);
+                        return;
+                    }
+                    this.right = new Node(info);
+                    return;
+            }
+            else if (info.compareToIgnoreCase(this.info) < 0){
+                    if (this.left != null){
+                        this.left.insert_element(info);
+                        return;
+                    }
+                    this.left = new Node(info);
+                    return;
+            }
+
+            
         }
 
         public void print(int depth){
             String prefix = depthPrefixes(depth,false);
-            System.out.printf("%s%d\n",prefix,this.info);
+            System.out.printf("%s%s\n",prefix,this.info);
 
             if(this.left != null){
                 this.left.print(depth+1);
