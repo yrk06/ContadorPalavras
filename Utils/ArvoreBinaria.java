@@ -1,9 +1,10 @@
 package Utils;
 
+import java.io.*;
 import java.util.Arrays;
 
 /* Adaptado pra string */
-public class ArvoreBinaria {
+public class ArvoreBinaria implements Serializable {
     Node root;
 
     public ArvoreBinaria(){
@@ -155,23 +156,16 @@ public class ArvoreBinaria {
     public boolean contains(String value){
         Node current = root;
         while(current != null){
-            if(value.equals(current.info)){
+            if(value.compareToIgnoreCase(current.info) == 0){
                 return true;
             }
-            int max = (current.info.length() < value.length()) ? current.info.length():value.length();
-
-            for(int char_pos = 0; char_pos<max;char_pos++){
-
-                if (value.charAt(char_pos) > current.info.charAt(char_pos)){
+            if (value.compareToIgnoreCase(current.info) > 0){
                     current = current.right;
-                    break;
-                }
-                else if (value.charAt(char_pos) < current.info.charAt(char_pos)){
+                    continue;
+            }
+            else if (value.compareToIgnoreCase(current.info) < 0){
                     current = current.left;
-                    break;
-                }
-
-
+                    continue;
             }
 
         }
@@ -181,24 +175,18 @@ public class ArvoreBinaria {
     public Node get_node_by_value(String value){
         Node current = root;
         while(current != null){
-            if(value == current.info){
+            if(value.compareToIgnoreCase(current.info) == 0){
                 return current;
             }
-            int max = (current.info.length() < value.length()) ? current.info.length():value.length();
-
-            for(int char_pos = 0; char_pos<max;char_pos++){
-
-                if (value.charAt(char_pos) > current.info.charAt(char_pos)){
+            if (value.compareToIgnoreCase(current.info) > 0){
                     current = current.right;
-                    break;
-                }
-                else if (value.charAt(char_pos) < current.info.charAt(char_pos)){
-                    current = current.left;
-                    break;
-                }
-
-
+                    continue;
             }
+            else if (value.compareToIgnoreCase(current.info) < 0){
+                    current = current.left;
+                    continue;
+            }
+
         }
         return null;
     }
@@ -231,42 +219,47 @@ public class ArvoreBinaria {
         return root.size();
     }
     
-    public class Node {
+    public class Node implements Serializable {
         Node left;
         Node right;
         public String info;
+        public ListaEncadeada where;
 
     
         public Node(String info){
             this.info = info;
             this.right = null;
             this.left = null;
+            this.where = new ListaEncadeada();
+        }
+
+        public void add_reference(String arquive){
+            if(where.contains(arquive)){
+                where.findArquive(arquive).value += 1;
+            }
+            else{
+                where.insertUnordered(1, arquive);
+            }
         }
 
         public void insert_element(String info){
-            int max = (this.info.length() < info.length()) ? this.info.length():info.length();
-
-            for(int char_pos = 0; char_pos<max;char_pos++){
-
-                if (info.charAt(char_pos) > this.info.charAt(char_pos)){
+            if (info.compareToIgnoreCase(this.info) > 0){
                     if (this.right != null){
                         this.right.insert_element(info);
                         return;
                     }
                     this.right = new Node(info);
                     return;
-                }
-                else if (info.charAt(char_pos) < this.info.charAt(char_pos)){
+            }
+            else if (info.compareToIgnoreCase(this.info) < 0){
                     if (this.left != null){
                         this.left.insert_element(info);
                         return;
                     }
                     this.left = new Node(info);
                     return;
-                }
-
-
             }
+
             
         }
 
