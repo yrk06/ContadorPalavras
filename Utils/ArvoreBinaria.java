@@ -25,6 +25,64 @@ public class ArvoreBinaria implements Serializable {
             root.print(0);
         }
     }
+    
+    
+    public int checar_balanceamento(Node x) {
+		// Node l = x.left;
+		// Node r = x.right;
+		if (x == null && x == null) {
+			return 0;
+		}
+		if (x.left == null && x.right == null) {
+			return 0;
+		}
+		if (x.left == null) {
+			return (0 - x.right.size());
+		}
+		if (x.right == null) {
+			return (x.left.size() - 0);
+		}
+		return (x.left.size() - x.right.size());
+	}
+
+	public void balanceamento(Node x) {
+		if (checar_balanceamento(x) > 1) {
+			if (Math.abs(checar_balanceamento(x.left)) <= 1 && Math.abs(checar_balanceamento(x.right)) <= 1) {
+				balancear(x);
+			} else {
+				balanceamento(x.right);
+			}
+		}
+		if (checar_balanceamento(x) < -1) {
+			if (Math.abs(checar_balanceamento(x.left)) <= 1 && Math.abs(checar_balanceamento(x.right)) <= 1) {
+				balancear(x);
+			} else {
+				balanceamento(x.left);
+			}
+		}
+
+	}
+
+	public void balancear(Node x) {
+		if (x == null) {
+			return;
+		}
+		if (checar_balanceamento(x) > 1) {
+			// rotação direita
+			Node q = x.left;
+			Node aux = q.right;
+			q.right = x;
+			x.left = aux;
+
+		} else {
+			// rotação esquerda
+			Node q = x.right;
+			Node aux = q.left;
+			q.left = x;
+			x.right = aux;
+		}
+	}
+    
 
     public Node[] percorrer_preorder(){
         if(this.root == null){
