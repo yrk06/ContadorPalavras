@@ -20,7 +20,7 @@ public class Projeto1 {
 
             String folder_path = input.nextLine();
 
-            input.close();
+            //input.close();
 
             main = generateTree(folder_path);
             saveTree(main);
@@ -99,6 +99,10 @@ public class Projeto1 {
             if (word.equals("_exit_")){
                 break;
             }
+            if (word.equals("_print_")){
+                tree.print();
+                continue;
+            }
 
             if(!tree.contains(word)){
                 System.out.printf("-------- %s -------- \n No Matches \n-------- \n",word);
@@ -107,6 +111,6 @@ public class Projeto1 {
                 tree.get_node_by_value(word).where.print();
             }
         }
-        input.close();
+        //input.close();
     }
 }
