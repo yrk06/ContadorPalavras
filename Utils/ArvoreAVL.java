@@ -61,13 +61,21 @@ public class ArvoreAVL extends ArvoreBinaria  {
 		if (x == null) {
 			return;
 		}
+        //Guardar a referencia da árvore para consertar inconsistencias
+        Node[] references = this.percorrer_inorder();
+        Node parent = null;
+        for(Node ref : references){
+            if (ref.right == x || ref.left == x){
+                parent = ref;
+            }
+        }
 		if (checar_balanceamento(x) > 1) {
 			
             //Peca a direita vira o Nroot
             Node newRoot = x.left;
             //O que ta a direita do new Root vai ficar a esquerda do root atual
             Node nRootOldRight = newRoot.right;
-            x.right = nRootOldRight;
+            x.left = nRootOldRight;
 
             //O root atual fica a direita do new root
             newRoot.right = x;
@@ -75,6 +83,16 @@ public class ArvoreAVL extends ArvoreBinaria  {
             //caso especial
             if (x == root){
                 root = newRoot;
+                return;
+            }
+            //Precisa arrumar as referencias
+            if (parent != null){
+                if (parent.right == x){
+                    parent.right = newRoot;
+                }
+                if (parent.left == x){
+                    parent.left = newRoot;
+                }
             }
             
             // rotação direita
@@ -97,6 +115,17 @@ public class ArvoreAVL extends ArvoreBinaria  {
             if (x == root){
                 root = newRoot;
             }
+
+            //Precisa arrumar as referencias
+            if (parent != null){
+                if (parent.right == x){
+                    parent.right = newRoot;
+                }
+                if (parent.left == x){
+                    parent.left = newRoot;
+                }
+            }
+
 			// rotação esquerda
 			/*Node q = x.right;
 			Node aux = q.left;
